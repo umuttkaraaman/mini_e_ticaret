@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Ürünü Düzenle{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4">Ürünü Düzenle</h2>
+
+  <form method="post">
+    <div class="mb-3">
+      <label for="name" class="form-label">Ürün Adı</label>
+      <input type="text" id="name" class="form-control" name="name" value="{{ urun.name }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Açıklama</label>
+      <textarea id="description" class="form-control" name="description" rows="3" required>{{ urun.description }}</textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="price" class="form-label">Fiyat (₺)</label>
+      <input type="number" id="price" class="form-control" step="0.01" name="price" value="{{ urun.price }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="stock" class="form-label">Stok Adedi</label>
+      <input type="number" id="stock" class="form-control" name="stock" value="{{ urun.stock }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="image_url" class="form-label">Görsel URL</label>
+      <input type="text" id="image_url" class="form-control" name="image_url" value="{{ urun.image_url }}">
+    </div>
+
+    <button type="submit" class="btn btn-success">Değişiklikleri Kaydet</button>
+    <a href="{{ url_for('admin.urun_listesi') }}" class="btn btn-secondary ms-2">Geri Dön</a>
+  </form>
+</div>
+{% endblock %}

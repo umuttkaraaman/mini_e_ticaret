@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sipariş Logları{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Sipariş İşlem Logları</h2>
+
+{% if loglar %}
+  <table class="table table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Kullanıcı</th>
+        <th>Sipariş ID</th>
+        <th>İşlem</th>
+        <th>Tarih</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in loglar %}
+      <tr>
+        <td>{{ log.user.username }}</td>
+        <td>{{ log.siparis_id }}</td>
+        <td>{{ log.islem }}</td>
+        <td>{{ log.zaman.strftime('%d.%m.%Y %H:%M') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="alert alert-info">Henüz log kaydı bulunmamaktadır.</div>
+{% endif %}
+{% endblock %}

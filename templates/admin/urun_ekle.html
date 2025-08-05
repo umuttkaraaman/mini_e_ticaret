@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Yeni Ürün Ekle{% endblock %}
+
+{% block content %}
+  <h2 class="mb-4">Yeni Ürün Ekle</h2>
+
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">Ürün Adı</label>
+      <input type="text" name="name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Açıklama</label>
+      <textarea name="description" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Fiyat</label>
+      <input type="number" name="price" class="form-control" step="0.01" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Stok</label>
+      <input type="number" name="stock" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Resim URL</label>
+      <input type="text" name="image_url" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a href="{{ url_for('admin.urun_listesi') }}" class="btn btn-secondary">Geri Dön</a>
+  </form>
+{% endblock %}

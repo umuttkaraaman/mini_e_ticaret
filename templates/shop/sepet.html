@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Sepetim{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">🛒 Sepetim</h2>
+
+{% if sepet %}
+  <div class="table-responsive">
+    <table class="table table-bordered align-middle text-center">
+      <thead class="table-dark">
+        <tr>
+          <th>Ürün</th>
+          <th>Adet</th>
+          <th>Birim Fiyat</th>
+          <th>Toplam</th>
+          <th>İşlem</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in sepet %}
+        <tr>
+          <td>{{ item.product.name }}</td>
+          <td>
+            <div class="d-flex justify-content-center align-items-center">
+              <a href="{{ url_for('shop.sepet_azalt', item_id=item.id) }}" class="btn btn-sm btn-outline-secondary me-2">-</a>
+              <span>{{ item.quantity }}</span>
+              <a href="{{ url_for('shop.sepet_arttir', item_id=item.id) }}" class="btn btn-sm btn-outline-secondary ms-2">+</a>
+            </div>
+          </td>
+          <td>₺{{ item.product.price }}</td>
+          <td><strong>₺{{ item.product.price * item.quantity }}</strong></td>
+          <td>
+            <a href="{{ url_for('shop.sepetten_cikar', item_id=item.id) }}" class="btn btn-sm btn-outline-danger">❌</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mt-4">
+    <h4>Genel Toplam: <span class="text-success">₺{{ toplam }}</span></h4>
+    <a href="{{ url_for('shop.siparis_ver') }}" class="btn btn-success btn-lg">Siparişi Tamamla</a>
+  </div>
+
+{% else %}
+  <div class="alert alert-warning mt-4">Sepetinizde ürün bulunmamaktadır.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Ürün Listesi (Admin){% endblock %}
+
+{% block content %}
+  <h2 class="mb-4">Ürün Listesi</h2>
+
+  <a href="{{ url_for('admin.urun_ekle') }}" class="btn btn-success mb-3">Yeni Ürün Ekle</a>
+
+  {% if urunler %}
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>Ad</th>
+            <th>Fiyat</th>
+            <th>Stok</th>
+            <th>İşlem</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for urun in urunler %}
+          <tr>
+            <td>{{ urun.name }}</td>
+            <td>₺{{ urun.price }}</td>
+            <td>{{ urun.stock }}</td>
+            <td>
+              <a href="{{ url_for('admin.urun_sil', urun_id=urun.id) }}" class="btn btn-sm btn-danger"
+                 onclick="return confirm('Bu ürünü silmek istediğinizden emin misiniz?')">
+                Sil
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-warning">Henüz ürün eklenmemiş.</div>
+  {% endif %}
+{% endblock %}

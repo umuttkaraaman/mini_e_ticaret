@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Sipariş Detayı{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">📦 Sipariş Detayı</h2>
+
+<div class="card shadow-sm">
+  <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+    <span>Sipariş Tarihi: {{ siparis.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+
+    <span>
+      Durum:
+      {% if siparis.status == 'Hazırlanıyor' %}
+        <span class="badge bg-warning text-dark">{{ siparis.status }}</span>
+      {% elif siparis.status == 'Kargoda' %}
+        <span class="badge bg-primary">{{ siparis.status }}</span>
+      {% elif siparis.status == 'Teslim Edildi' %}
+        <span class="badge bg-success">{{ siparis.status }}</span>
+      {% else %}
+        <span class="badge bg-secondary">Bilinmiyor</span>
+      {% endif %}
+    </span>
+  </div>
+
+  <div class="card-body">
+    <ul class="list-group mb-3">
+      {% for item in siparis.order_items %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ item.product.name }}</strong><br>
+            Adet: {{ item.quantity }}
+          </div>
+          <span>₺{{ item.price }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div class="text-end">
+      <h5>Toplam Tutar: <strong>₺{{ siparis.total_price }}</strong></h5>
+    </div>
+
+    <a href="{{ url_for('shop.siparislerim') }}" class="btn btn-outline-secondary mt-3">← Siparişlerime Dön</a>
+  </div>
+</div>
+{% endblock %}

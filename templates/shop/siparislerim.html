@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Siparişlerim{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Siparişlerim</h2>
+
+{% if siparisler %}
+  {% for siparis in siparisler %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+        <span>Sipariş Tarihi: {{ siparis.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+        <span>Toplam Tutar: <strong>₺{{ siparis.total_price }}</strong></span>
+      </div>
+
+      <div class="card-body">
+        <ul class="list-group mb-3">
+          {% for item in siparis.order_items %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ item.product.name }}</strong><br>
+                Adet: {{ item.quantity }}
+              </div>
+              <span>₺{{ item.price }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <!-- Sipariş Durumu -->
+        <div class="alert alert-secondary mb-3">
+          <strong>Sipariş Durumu:</strong>
+          {% if siparis.status == 'Hazırlanıyor' %}
+            <span class="badge bg-warning text-dark">{{ siparis.status }}</span>
+          {% elif siparis.status == 'Kargoda' %}
+            <span class="badge bg-primary">{{ siparis.status }}</span>
+          {% elif siparis.status == 'Teslim Edildi' %}
+            <span class="badge bg-success">{{ siparis.status }}</span>
+          {% else %}
+            <span class="badge bg-secondary">Bilinmiyor</span>
+          {% endif %}
+        </div>
+
+        <!-- İşlem Butonları -->
+        {% if siparis.status == 'Hazırlanıyor' %}
+          <a href="{{ url_for('shop.siparis_iptal', siparis_id=siparis.id) }}" class="btn btn-outline-danger w-100 mb-2">Siparişi İptal Et</a>
+        {% else %}
+          <button class="btn btn-outline-secondary w-100 mb-2" disabled>İptal Edilemez</button>
+        {% endif %}
+
+        <a href="{{ url_for('shop.siparis_detay', siparis_id=siparis.id) }}" class="btn btn-outline-primary w-100 mb-2">Detayları Görüntüle</a>
+
+        <!-- ✅ PDF Fiş İndir Butonu -->
+        <a href="{{ url_for('shop.kullanici_siparis_pdf', siparis_id=siparis.id) }}" class="btn btn-outline-success w-100">PDF Fişi İndir</a>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="alert alert-info">Henüz siparişiniz bulunmamaktadır.</div>
+{% endif %}
+{% endblock %}

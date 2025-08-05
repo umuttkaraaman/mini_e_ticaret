@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Tüm Siparişler{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Tüm Siparişler</h2>
+
+{% if siparisler %}
+  <div class="table-responsive">
+    <table class="table table-bordered align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Kullanıcı</th>
+          <th>Sipariş Tarihi</th>
+          <th>Toplam Tutar</th>
+          <th>Durum</th>
+          <th>Detaylar & İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for siparis in siparisler %}
+        <tr class="{% if siparis.status == 'Teslim Edildi' %}table-success{% endif %}">
+          <td>{{ siparis.user.username }}</td>
+          <td>{{ siparis.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+          <td>₺{{ siparis.total_price }}</td>
+
+          <!-- Sipariş Durumu Güncelleme -->
+          <td>
+            <form method="POST" action="{{ url_for('admin.siparis_durum_guncelle', siparis_id=siparis.id) }}" onsubmit="return siparisOnayla(this);">
+              <div class="input-group">
+                <select name="yeni_durum" class="form-select">
+                  {% set durumlar = ['Hazırlanıyor', 'Kargoda', 'Teslim Edildi'] %}
+                  {% for durum in durumlar %}
+                    <option value="{{ durum }}" {% if siparis.status == durum %}selected{% endif %}>{{ durum }}</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-sm btn-primary">Güncelle</button>
+              </div>
+            </form>
+          </td>
+
+          <!-- Sipariş Detayları ve İşlemler -->
+          <td>
+            <ul class="mb-2">
+              {% for item in siparis.order_items %}
+                <li>{{ item.product.name }} ({{ item.quantity }} adet)</li>
+              {% endfor %}
+            </ul>
+
+            {% if siparis.status != "Teslim Edildi" %}
+              <form method="POST" action="{{ url_for('admin.siparis_iptal', siparis_id=siparis.id) }}" onsubmit="return confirm('Bu siparişi iptal etmek istediğinizden emin misiniz?');">
+                <button type="submit" class="btn btn-sm btn-danger">İptal Et</button>
+              </form>
+            {% else %}
+              <span class="text-success">Teslim edildi - İptal edilemez</span>
+            {% endif %}
+
+            <!-- PDF Fiş Butonu -->
+            <a href="{{ url_for('admin.siparis_pdf', siparis_id=siparis.id) }}" class="btn btn-sm btn-secondary mt-2">
+              PDF Fiş
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-info">Hiç sipariş bulunmamaktadır.</div>
+{% endif %}
+
+<!-- JS: Teslim Edildi için onay kutusu -->
+<script>
+  function siparisOnayla(form) {
+    const durumSelect = form.querySelector('select[name="yeni_durum"]');
+    if (durumSelect && durumSelect.value === "Teslim Edildi") {
+      return confirm("Bu siparişi 'Teslim Edildi' durumuna geçirmek istediğinize emin misiniz?");
+    }
+    return true;
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Ürün Kataloğu{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Ürün Kataloğu</h2>
+
+<div class="row">
+  {% for urun in urunler %}
+    <div class="col-md-4">
+      <div class="card mb-4 shadow-sm">
+        {% if urun.image_url %}
+          <img src="{{ urun.image_url }}" class="card-img-top" alt="{{ urun.name }}">
+        {% else %}
+          <img src="https://via.placeholder.com/300x200?text=No+Image" class="card-img-top" alt="No image">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ urun.name }}</h5>
+          <p class="card-text">{{ urun.description }}</p>
+          <p class="card-text">
+            <strong>₺{{ urun.price }}</strong> <br>
+            <small class="text-muted">Stok: {{ urun.stock }}</small>
+          </p>
+
+          {% if current_user.is_authenticated %}
+            {% if current_user.is_admin %}
+              <a href="{{ url_for('admin.urun_duzenle', urun_id=urun.id) }}" class="btn btn-warning w-100">Düzenle</a>
+            {% else %}
+              {% if urun.stock > 0 %}
+                <form action="{{ url_for('shop.sepete_ekle', urun_id=urun.id) }}" method="post">
+                  <button type="submit" class="btn btn-primary w-100">Sepete Ekle</button>
+                </form>
+              {% else %}
+                <button class="btn btn-secondary w-100" disabled>Stokta Yok</button>
+              {% endif %}
+            {% endif %}
+          {% else %}
+            <a href="{{ url_for('auth.giris') }}" class="btn btn-secondary w-100">Giriş yaparak sepete ekle</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <p>Henüz ürün bulunmamaktadır.</p>
+  {% endfor %}
+</div>
+{% endblock %}
